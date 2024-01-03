@@ -1,0 +1,61 @@
+{
+	"name": "electronapp",
+	"private": true,
+	"version": "0.0.0",
+	"main": "electron/main.js",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build && electron-builder",
+		"electron:serve": "electron .",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"vue": "^3.3.11"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^4.5.2",
+		"electron": "^28.1.0",
+		"electron-builder": "^24.9.1",
+		"vite": "^5.0.8",
+		"vite-plugin-electron": "^0.15.5",
+		"vite-plugin-electron-renderer": "^0.14.5"
+	},
+	"build": {
+		"appId": "electronApp",
+		"productName": "某应用",
+		"copyright": "Copyright © 2023",
+		"nsis": {
+			"oneClick": false,
+			"allowToChangeInstallationDirectory": true
+		},
+		"asar": true,
+		"asarUnpack": [
+			"./dist/electron",
+			"./package.json"
+		],
+		"win": {
+			"target": [
+				{
+					"target": "nsis",
+					"arch": [
+						"x64",
+						"ia32"
+					]
+				}
+			]
+		},
+		"extraResources": [
+			{
+				"from": "public/",
+				"to": "static/"
+			}
+		],
+		"files": [
+			"dist/**/*",
+			"electron/**/*"
+		],
+		"directories": {
+			"output": "release"
+		}
+	}
+}
