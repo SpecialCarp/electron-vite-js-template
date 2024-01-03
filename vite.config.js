@@ -18,9 +18,12 @@ export default defineConfig(({ command }) => {
 	return {
 		//base:'',//有点重要，新项目打包时没留意项目设置的是绝对路径，导致项目打包后白屏在这里浪费了很长时间。
 		resolve: {
-			alias: {
-				'@': resolve('src'),
-			},
+			alias: [
+				{
+					find: '@', //指向的是src目录
+					replacement: resolve(__dirname, 'src'),
+				},
+			],
 		},
 		server: {
 			host: 'localhost',
