@@ -1,7 +1,9 @@
 // 控制应用生命周期和创建原生浏览器窗口的模组
-const { app, BrowserWindow, shell, ipcMain, protocol } = require('electron');
+const { app, BrowserWindow, shell, ipcMain, protocol, session } = require('electron');
 const { release } = require('node:os');
 const path = require('path');
+const installExtension = require('electron-devtools-installer');
+
 /*
  * process.env.NODE_ENV用在正式项目中，此值有可能是undefined
  * 可用electron的app.isPackaged代替判断是否开发环境
@@ -26,7 +28,12 @@ if (!app.requestSingleInstanceLock()) {
 	process.exit(0);
 }
 let mainWindow = null;
-function createWindow() {
+async function createWindow() {
+	// if (!app.isPackaged) {
+	// 	await session.defaultSession.loadExtension(
+	// 		path.join(__dirname, '../plugins/vuetools6.5.1')
+	// 	);
+	// }
 	// 创建浏览器窗口
 	mainWindow = new BrowserWindow({
 		width: 1800,
@@ -43,6 +50,7 @@ function createWindow() {
 	mainWindow.loadURL(
 		isDev ? `http://localhost:${port}` : `file://${path.join(__dirname, '../dist/index.html')}`
 	);
+	await installExtension.default(installExtension.VUEJS_DEVTOOLS);
 	if (isDev) {
 		// 打开开发工具
 		mainWindow.webContents.openDevTools();
