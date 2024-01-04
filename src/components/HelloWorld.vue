@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 import { useMyStore } from '@/store/myStore/myStore';
 
 const myStore = useMyStore();
@@ -9,6 +9,15 @@ defineProps({
 });
 
 const count = ref(0);
+const { proxy } = getCurrentInstance();
+
+function sendMessage() {
+	console.log(proxy);
+	console.log(proxy.$electronAPI);
+	console.log(proxy.$electronAPI.system);
+	console.log(proxy.$electronAPI.system.sendMessage);
+	proxy.$electronAPI.system.sendMessage();
+}
 </script>
 
 <template>
@@ -34,6 +43,7 @@ const count = ref(0);
 	</p>
 	<p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
 	<p>Message: {{ myStore.message }}</p>
+	<button type="button" @click="sendMessage">sendMsg</button>
 </template>
 
 <style scoped>

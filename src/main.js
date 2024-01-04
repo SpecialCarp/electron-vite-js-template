@@ -6,6 +6,8 @@ import pinia from './store/pinia';
 
 const app = createApp(App);
 
+app.config.globalProperties.$electronAPI = window.electronAPI;
+
 app.use(pinia);
 
 app.mount('#app');

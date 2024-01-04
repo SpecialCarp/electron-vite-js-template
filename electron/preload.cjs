@@ -1,3 +1,18 @@
+const { ipcRenderer, contextBridge } = require('electron');
+
+// 使用 contextBridge.exposeInMainWorld 将 ipcRenderer 暴露给渲染进程
+contextBridge.exposeInMainWorld('electronAPI', {
+	system: {
+		sendMessage: () => {
+			console.log("接收到消息");
+			ipcRenderer.invoke('sendMessage', {
+				title: 'My App',
+				body: 'Hello, this is a notification!',
+			});
+		},
+	},
+});
+
 window.addEventListener('DOMContentLoaded', () => {
 	const replaceText = (selector, text) => {
 		const element = document.getElementById(selector);
@@ -95,4 +110,4 @@ domReady().then(appendLoading);
 window.onmessage = ev => {
 	ev.data.payload === 'removeLoading' && removeLoading();
 };
-setTimeout(removeLoading, 2999);
+setTimeout(removeLoading, 1999);

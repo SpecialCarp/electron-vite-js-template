@@ -1,8 +1,7 @@
 // 控制应用生命周期和创建原生浏览器窗口的模组
-const { app, BrowserWindow, shell, ipcMain, protocol, session } = require('electron');
+const { app, BrowserWindow, shell, ipcMain, protocol, session, Notification } = require('electron');
 const { release } = require('node:os');
 const path = require('path');
-const installExtension = require('electron-devtools-installer');
 
 /*
  * process.env.NODE_ENV用在正式项目中，此值有可能是undefined
@@ -29,11 +28,6 @@ if (!app.requestSingleInstanceLock()) {
 }
 let mainWindow = null;
 async function createWindow() {
-	// if (!app.isPackaged) {
-	// 	await session.defaultSession.loadExtension(
-	// 		path.join(__dirname, '../plugins/vuetools6.5.1')
-	// 	);
-	// }
 	// 创建浏览器窗口
 	mainWindow = new BrowserWindow({
 		width: 1800,
@@ -42,16 +36,18 @@ async function createWindow() {
 		minHeight: 800,
 		webPreferences: {
 			nodeIntegration: true, //在渲染进程启用Node.js
-			contextIsolation: false,
-			preload: path.join(__dirname, 'preload.js'),
+			contextIsolation: true,
+			preload: path.join(__dirname, 'preload.cjs'),
+			devTools: isDev, // 打包之后禁止打开控制台
 		},
 	});
 	// 加载 index.html
 	mainWindow.loadURL(
 		isDev ? `http://localhost:${port}` : `file://${path.join(__dirname, '../dist/index.html')}`
 	);
-	await installExtension.default(installExtension.VUEJS_DEVTOOLS);
 	if (isDev) {
+		const installExtension = require('electron-devtools-installer');
+		await installExtension.default(installExtension.VUEJS_DEVTOOLS);
 		// 打开开发工具
 		mainWindow.webContents.openDevTools();
 	}
@@ -70,7 +66,22 @@ async function createWindow() {
 // 这段程序将会在 Electron 结束初始化
 // 和创建浏览器窗口的时候调用
 // 部分 API 在 ready 事件触发后才能使用。
-app.whenReady().then(createWindow);
+app.whenReady()
+	.then(createWindow)
+	.then(() => {
+		ipcMain.handle('sendMessage',  (event, msgData) => {
+			if (Notification.isSupported()) {
+				if (!msgData) {
+					return;
+				}
+				const notify = new Notification({
+					title: msgData.title ? msgData.title : 'My electronApp',
+					body: msgData.body ? msgData.body : 'Hello, Electron + Vite!',
+				});
+				notify.show();
+			}
+		});
+	});
 app.on('activate', function () {
 	// 通常在 macOS 上，当点击 dock 中的应用程序图标时，如果没有其他
 	// 打开的窗口，那么程序会重新创建一个窗口。
