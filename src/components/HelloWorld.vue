@@ -14,9 +14,9 @@ const { proxy } = getCurrentInstance();
 function sendMessage() {
 	console.log(proxy);
 	console.log(proxy.$electronAPI);
-	console.log(proxy.$electronAPI.system);
-	console.log(proxy.$electronAPI.system.sendMessage);
-	proxy.$electronAPI.system.sendMessage();
+	console.log(proxy.$electronAPI.notification);
+	console.log(proxy.$electronAPI.notification.sendMessage);
+	proxy.$electronAPI.notification.sendMessage();
 }
 </script>
 
