@@ -12,11 +12,16 @@ import HelloWorld from '@/components/HelloWorld.vue';
 		</a>
 	</div>
 	<HelloWorld msg="Vite + Vue" />
-  <div>
-    <span>chrome-version: <span id="chrome-version"></span></span>
-    <span>node-version: <span id="node-version"></span></span>
-    <span>electron-version: <span id="electron-version"></span></span>
-  </div>
+	<p>
+		<router-link to="/">Home</router-link> |
+		<router-link to="/about">About</router-link>
+	</p>
+	<router-view></router-view>
+	<div>
+		<span>chrome-version: <span id="chrome-version"></span></span> | 
+		<span>node-version: <span id="node-version"></span></span> | 
+		<span>electron-version: <span id="electron-version"></span></span>
+	</div>
 </template>
 
 <style scoped>
